@@ -1,0 +1,49 @@
+.productsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  align-items: center;
+  .productsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    gap: 20px;
+    align-items: center;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(3, auto);
+    }
+
+    @media (max-width: 495px) {
+      grid-template-columns: repeat(1, auto);
+      
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination li a {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.pagination li a:hover {
+  background-color: #eee;
+}
+
+.pagination .active a {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
