@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { ProductProps } from "../../types";
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
@@ -26,3 +27,15 @@ export const fetchProducts = createAsyncThunk(
 );
 
 
+export const fetchProduct = async (id: string): Promise<ProductProps> => {
+  try {
+    const response = await axios.get(`https://skillfactory-task.detmir.team/products/${id}`);
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch product with ID: ${id}`);
+    }
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw new Error("Failed to fetch product");
+  }
+};

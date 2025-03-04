@@ -4,7 +4,7 @@ import { fetchProducts } from './productsAPI';
 
 interface ProductsState {
   items: Record<number, ProductProps[]>; // Данные по страницам
-  currentPage: number; // Текущая страница
+  currentPage: number; 
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
