@@ -4,79 +4,90 @@
   align-items: center;
   padding: 20px;
   gap: 20px;
+  font-size: 16px;
+
+  .productContainer, .productDescription {
+    display: flex;
+    max-width: 800px;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+    padding: 24px;
+    
+  }
+  .productContainer {
+    flex-direction: row;
+    gap: 24px;
+
+    .productImage {
+      width: 50%;
+      aspect-ratio: 1 / 1;
+    }
+
+    .productDetails {
+      display: flex;
+      flex-direction: column;
+
+      .productTitle {
+        font-size: 1.75em;
+        font-weight: 700;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .productRating {
+        width: 76px;
+      }
+
+      .productPrice {
+        font-size: 1.75em;
+        font-weight: 800;
+      }
+
+      .addToCartButton {
+        padding: 16px 20px;
+        font-weight: 700;
+        font-size: 1em;
+        background-color: #0073E6;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+      }
+      
+      .returnPolicyTitle {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      
+      .returnPolicyText {
+        margin-bottom: 10px;
+      }
+
+      .priceNote {
+        font-size: 0.9em;
+        color: #555;
+      }
+    }
+
+    .productDescription {
+      margin-top: 20px;
+      flex-direction: column ;
+
+      .productDescription h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+      
+      .productDescription p {
+        font-size: 1em;
+        line-height: 1.5;
+      }
+    }
+  }
 }
 
-.productContainer {
-  display: flex;
-  flex-direction: row;
-  max-width: 1400px;
-}
-
-.productImage {
-  width: 50%;
-  aspect-ratio: 1 / 1;
-  border-radius: 16px;
-}
-
-.productDetails {
-  padding: 20px;
-  border-radius: 16px;
-  margin-top: 20px;
-}
-
-.productTitle {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.productRating {
-  width: 100px;
-  margin-bottom: 10px;
-}
-
-.productPrice {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.addToCartButton {
-  padding: 10px 20px;
-  font-size: 1em;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
-
-.returnPolicyTitle {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.returnPolicyText {
-  margin-bottom: 10px;
-}
-
-.priceNote {
-  font-size: 0.9em;
-  color: #555;
-}
-
-.productDescription {
-  margin-top: 20px;
-}
-
-.productDescription h2 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-}
-
-.productDescription p {
-  font-size: 1em;
-  line-height: 1.5;
-}

@@ -41,8 +41,11 @@ const ProductPage = () => {
           <h1 className={style.productTitle}>{product.title}</h1>
           <img src={getStarImagePath(product.rating)} alt='rating' className={style.productRating} />
           <p className={style.productPrice}>{product.price}₽</p>
-          <button className={style.addToCartButton}>Add to Cart</button>
-          <p className={style.returnPolicyTitle}>Условия возврата</p>
+          <button className={style.addToCartButton}>Добавить в корзину</button>
+          <div>
+            <img src='/img/svg/Undo.svg' alt='return icon' className={style.returnPolicyIcon} />
+            <span className={style.returnPolicyTitle}>Условия возврата</span>
+          </div>
           <p className={style.returnPolicyText}>Обменять или вернуть товар надлежащего качества можно в течение 14 дней с момента покупки.</p>
           <span className={style.priceNote}>Цены в интернет-магазине могут отличаться от розничных магазинов.</span>
         </div>
