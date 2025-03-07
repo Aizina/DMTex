@@ -48,10 +48,12 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-bottom: 5px;
         }    
       
         .productRating {
             width: 70px;
+            margin-bottom: 10px;
           }
 
         .productPrice {
@@ -60,5 +62,10 @@
           color: #172029;
           margin-top: 5px;
         }
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
     }
 }

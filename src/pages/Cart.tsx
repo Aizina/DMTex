@@ -1,0 +1,71 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../app/store';
+import { fetchCart, updateCart, submitOrder } from '../features/cart/cartAPI';
+import style from '../styles/Cart.module.scss';
+
+const Cart = () => {
+  const dispatch = useAppDispatch();
+  const { items, total } = useSelector((state: RootState) => state.cart);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+
+  const handleIncrease = (id: string) => {
+    const item = items.find((item) => item.id === id);
+    if (item && item.quantity < 10) {
+      dispatch(updateCart({ ...item, quantity: item.quantity + 1 }));
+    }
+  };
+
+  const handleDecrease = (id: string) => {
+    const item = items.find((item) => item.id === id);
+    if (item && item.quantity > 1) {
+      dispatch(updateCart({ ...item, quantity: item.quantity - 1 }));
+    }
+  };
+
+  const handleSubmitOrder = () => {
+    if (total > 10_000) {
+      setError('Общая сумма заказа не может превышать 10 000 руб.');
+      return;
+    }
+
+    dispatch(submitOrder());
+    alert('Заказ успешно оформлен!');
+  };
+
+  if (items.length === 0) return <p className={style.emptyCart}>Корзина пуста</p>;
+
+  return (
+    <div className={style.cart}>
+      <h2>Корзина</h2>
+      {error && <p className={style.error}>{error}</p>}
+      <ul className={style.cartList}>
+        {items.map((item) => (
+          <li key={item.id} className={style.cartItem}>
+            <img src={item.picture} alt={item.title} className={style.productImage} />
+            <div className={style.productDetails}>
+              <h3>{item.title}</h3>
+              <p>{item.price}₽ за штуку</p>
+              <div className={style.quantityControls}>
+                <button onClick={() => handleDecrease(item.id)}>-</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => handleIncrease(item.id)}>+</button>
+              </div>
+              <p>Сумма: {item.price * item.quantity}₽</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div className={style.cartTotal}>
+        <h3>Итого: {total}₽</h3>
+        <button onClick={handleSubmitOrder} className={style.checkoutButton}>ОФОРМИТЬ ЗАКАЗ</button>
+      </div>
+    </div>
+  );
+};
+
+export default Cart;

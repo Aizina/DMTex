@@ -1,0 +1,110 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+    padding: 15px;
+    font-size: 16px;
+    color: #172029;
+    font-weight: 700; 
+    max-width: 1800px;
+    margin: 0 auto 30px;
+
+    .logo {
+        width: 150px;
+        height: 30px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        color: #172029;
+        width: 50%;
+
+        @media (max-width: 768px)  {
+            display: none;
+        }
+
+        .mainNavList {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+
+            @media (max-width: 768px)  {
+                flex-direction: column;
+            }
+
+            .navItem {
+                margin-right: 20px;
+                font-size: 1em;
+                text-decoration: none;
+                line-height: 2;
+                font-weight: 700; 
+                color: #172029;
+    
+                &.active {
+                    color: #0073E6;
+                    border-bottom: #0073E6 3px solid;
+                }
+            }
+        }
+
+        &.navOpen {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 100%;
+            padding: 50px 0;
+            gap: 10px;
+            z-index: 1000;
+            background-color: #F2F6FA;
+
+            .navItem {
+                margin-right: 0;
+                font-size: 1.5em;
+                text-decoration: none;
+                line-height: 2;
+                font-weight: 700; 
+            }
+        }
+    }
+
+    .cartItem {
+        font-size: 1em;
+        text-decoration: none;
+        color: #172029;
+        font-weight: 700; 
+
+        @media (max-width: 768px)  {
+            font-size: 1.5em;
+            line-height: 2;
+        }
+    }
+
+    .burger {
+        display: none;
+        z-index: 1001;
+        @media (max-width: 768px) {
+            display: block;
+            z-index: 1001;
+            height: 25px;
+            width: 25px;
+
+        }
+
+        img {
+            width: 100%;
+        }
+    }
+}

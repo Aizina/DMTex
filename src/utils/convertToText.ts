@@ -1,36 +1,37 @@
+import parse, { domToReact, Element, DOMNode } from "html-react-parser";
+
 export function convertHTMLToText(html: string): string {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-  
-    let resultText = "";
-
-    const paragraph = doc.querySelector('p');
-    if (paragraph && paragraph.textContent) {
-      resultText += paragraph.textContent + "\n\n";
-    }
-  
-    const listItems = doc.querySelectorAll('ul li');
-    if (listItems.length > 0) {
-      Array.from(listItems).forEach((item) => {
-        resultText += `- ${item.textContent}\n`; 
-      });
-      resultText += "\n";
-    }
-
-    const warning = doc.querySelector('strong');
-    if (warning && warning.textContent) {
-      let warningText = warning.textContent;
-  
-      const links = warning.querySelectorAll('a');
-      links.forEach((link) => {
-        if (link.textContent && link.href) {
-          warningText = warningText.replace(link.textContent, `[${link.textContent}](${link.href})`);
+  return parse(html, {
+    replace: (node) => {
+      if (node instanceof Element) {
+        switch (node.name) {
+          case "ul":
+            return `\n${domToReact(node.children as DOMNode[])}\n`;
+            case "ol":
+              return `\n${(node.children as DOMNode[])
+                .map((child, index) =>
+                  child.type === "tag" && child.name === "li"
+                    ? `${index + 1}. ${domToReact((child as Element).children as DOMNode[])}`
+                    : null
+                )
+                .filter(Boolean)
+                .join("\n")}\n`;
+            case "li":
+              return `- ${domToReact(node.children as DOMNode[])}\n`;
+          case "p":
+            return `\n${domToReact(node.children as DOMNode[])}\n`;
+          case "strong":
+          case "b":
+            return `**${domToReact(node.children as DOMNode[])}**`;
+          case "em":
+          case "i":
+            return `*${domToReact(node.children as DOMNode[])}*`;
+          case "a":
+            return `[${domToReact(node.children as DOMNode[])}](${node.attribs.href})`;
+          default:
+            return domToReact(node.children as DOMNode[]);
         }
-      });
-  
-      resultText += warningText;
-    }
-  
-    return resultText;
-  }
-  
+      }
+    },
+  }) as string;
+}

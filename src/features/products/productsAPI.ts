@@ -2,15 +2,19 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { ProductProps } from "../../types";
 
+const API_BASE_URL = 'https://skillfactory-task.detmir.team';
+
+
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async ({ page, limit }: { page: number; limit: number }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        'https://skillfactory-task.detmir.team/products',
+        `${API_BASE_URL}/products`,
         {
           params: { page, limit, sort: 'title:asc' },
         }
+       
       );
       return { data: response.data.data, page };
 
@@ -29,10 +33,11 @@ export const fetchProducts = createAsyncThunk(
 
 export const fetchProduct = async (id: string): Promise<ProductProps> => {
   try {
-    const response = await axios.get(`https://skillfactory-task.detmir.team/products/${id}`);
+    const response = await axios.get(`${API_BASE_URL}/products/${id}`);
     if (response.status !== 200) {
       throw new Error(`Failed to fetch product with ID: ${id}`);
     }
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("API Error:", error);
