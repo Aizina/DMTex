@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../app/store';
-import { fetchCart, updateCart, submitOrder } from '../features/cart/cartAPI';
+import { fetchCart, submitOrder } from '../features/cart/cartAPI';
 import style from '../styles/Cart.module.scss';
+import CartItem from '../components/cartItem'
 
 const Cart = () => {
   const dispatch = useAppDispatch();
@@ -12,20 +13,6 @@ const Cart = () => {
   useEffect(() => {
     dispatch(fetchCart());
   }, [dispatch]);
-
-  const handleIncrease = (id: string) => {
-    const item = items.find((item) => item.id === id);
-    if (item && item.quantity < 10) {
-      dispatch(updateCart({ ...item, quantity: item.quantity + 1 }));
-    }
-  };
-
-  const handleDecrease = (id: string) => {
-    const item = items.find((item) => item.id === id);
-    if (item && item.quantity > 1) {
-      dispatch(updateCart({ ...item, quantity: item.quantity - 1 }));
-    }
-  };
 
   const handleSubmitOrder = () => {
     if (total > 10_000) {
@@ -43,23 +30,11 @@ const Cart = () => {
     <div className={style.cart}>
       <h2>Корзина</h2>
       {error && <p className={style.error}>{error}</p>}
-      <ul className={style.cartList}>
+      <div className={style.cartList}>
         {items.map((item) => (
-          <li key={item.id} className={style.cartItem}>
-            <img src={item.picture} alt={item.title} className={style.productImage} />
-            <div className={style.productDetails}>
-              <h3>{item.title}</h3>
-              <p>{item.price}₽ за штуку</p>
-              <div className={style.quantityControls}>
-                <button onClick={() => handleDecrease(item.id)}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => handleIncrease(item.id)}>+</button>
-              </div>
-              <p>Сумма: {item.price * item.quantity}₽</p>
-            </div>
-          </li>
+          <CartItem key={item.id} {...item} /> 
         ))}
-      </ul>
+      </div>
       <div className={style.cartTotal}>
         <h3>Итого: {total}₽</h3>
         <button onClick={handleSubmitOrder} className={style.checkoutButton}>ОФОРМИТЬ ЗАКАЗ</button>

@@ -1,11 +1,11 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CartItem, CartState, ApiCartItem } from "../../types";
+import { CartItemProps, CartState, ApiCartItem } from "../../types";
 
 const API_BASE_URL = "https://skillfactory-task.detmir.team";
 
 
-const recalcTotal = (items: CartItem[]): number =>
+const recalcTotal = (items: CartItemProps[]): number =>
   items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
 export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string }>(
@@ -13,7 +13,7 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
     async (_, { rejectWithValue }) => {
       try {
         const response = await axios.get(`${API_BASE_URL}/cart`);
-        const cartItems: CartItem[] = response.data.map((item: ApiCartItem) => ({
+        const cartItems: CartItemProps[] = response.data.map((item: ApiCartItem) => ({
           id: item.product.id,
           title: item.product.title,
           picture: item.product.picture,
@@ -35,19 +35,19 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
   
   export const updateCart = createAsyncThunk<
     CartState,
-    CartItem,
+    CartItemProps,
     { state: { cart: CartState }; rejectValue: string }
   >(
     "cart/updateCart",
     async (newItem, { rejectWithValue, getState }) => {
       try {
         const { items } = getState().cart;
-        let updatedItems: CartItem[];
+        let updatedItems: CartItemProps[];
         const existingItem = items.find((item) => item.id === newItem.id);
         if (existingItem) {
           updatedItems = items.map((item) =>
             item.id === newItem.id
-              ? { ...item, quantity: item.quantity + newItem.quantity }
+              ? { ...item, quantity: newItem.quantity }
               : item
           );
         } else {

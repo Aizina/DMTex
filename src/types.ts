@@ -9,7 +9,7 @@ export interface ProductProps {
 }
 
 
-export interface CartItem {
+export interface CartItemProps {
     id: string;
     title: string;
     picture: string;
@@ -18,7 +18,7 @@ export interface CartItem {
   }
   
 export interface CartState {
-    items: CartItem[];
+    items: CartItemProps[];
     total: number;
     status: "idle" | "loading" | "succeeded" | "failed";
     error: string | null;
