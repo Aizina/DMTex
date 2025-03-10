@@ -29,14 +29,18 @@ const Cart = () => {
   return (
     <div className={style.cart}>
       <h2>Корзина</h2>
-      {error && <p className={style.error}>{error}</p>}
       <div className={style.cartList}>
         {items.map((item) => (
           <CartItem key={item.id} {...item} /> 
         ))}
       </div>
       <div className={style.cartTotal}>
-        <h3>Итого: {total}₽</h3>
+        <div className={style.cartTotalAmount}>
+          <span className={style.totalText}>Итого </span>
+          <span className={style.totalAmount}>{total}₽</span>
+        </div>
+        
+        {error && <p className={style.error}>{error}</p>}
         <button onClick={handleSubmitOrder} className={style.checkoutButton}>ОФОРМИТЬ ЗАКАЗ</button>
       </div>
     </div>

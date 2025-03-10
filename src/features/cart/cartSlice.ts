@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartState } from "../../types";
-import { deleteCartItem, fetchCart, submitOrder, updateCart } from "./cartAPI";
+import { fetchCart, submitOrder, updateCart } from "./cartAPI";
 
 const loadCartFromLocalStorage = (): CartState => {
   try {
@@ -25,14 +25,11 @@ const saveCartToLocalStorage = (cart: CartState) => {
 
 const initialState: CartState = loadCartFromLocalStorage();
 
-
-
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // fetchCart cases
     builder
       .addCase(fetchCart.pending, (state) => {
         state.status = "loading";
@@ -49,7 +46,6 @@ const cartSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || "Ошибка";
       });
-    // updateCart cases: now the reducer receives the full updated cart
     builder
       .addCase(updateCart.pending, (state) => {
         state.status = "loading";
@@ -66,24 +62,6 @@ const cartSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || "Ошибка";
       });
-    // deleteCartItem cases
-    builder
-      .addCase(deleteCartItem.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(deleteCartItem.fulfilled, (state, action: PayloadAction<CartState>) => {
-        state.items = action.payload.items;
-        state.total = action.payload.total;
-        state.status = "succeeded";
-        state.error = null;
-        saveCartToLocalStorage(state);
-      })
-      .addCase(deleteCartItem.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload || "Ошибка";
-      });
-    // submitOrder cases
     builder
       .addCase(submitOrder.pending, (state) => {
         state.status = "loading";

@@ -3,13 +3,37 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem 0;
     border-bottom: 1px solid #ccc;
     font-size: 16px;
+    color: #172029;
+    gap: 20px;
+
+    @media (max-width:680px) {
+        font-size: 14px;
+        gap: 10px;
+    }
+
+    @media (max-width:500px) {
+        font-size: 12px;
+    }
 
     .productImage{
+        flex: 0 0 100px;
         width: 100px;
         height: 100px;
+
+        @media (max-width:680px) {
+            flex: 0 0 60px;
+            width: 60px;
+            height: 60px;
+        }
+
+        @media (max-width:500px) {
+            flex: 0 0 30px;
+            width: 30px;
+            height: 30px;
+        }
         img{
             width: 100%;
             height: 100%;
@@ -17,11 +41,24 @@
         }
     }
     .productTitle {
+        flex: 3;
         font-weight: 400;
         font-size: 1em;
         color: #172029;
+        padding: 0 20px;
+        display: -webkit-box;
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        @media (max-width:680px) {
+            padding: 0 10px;
+            flex: 2;
+        }
     }
     .quantityControls {
+        flex: 1;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -37,6 +74,17 @@
             background-color: #E6F1FC;
             font-weight: 700;
             font-size: 1em;
+
+            img{
+                width: 70%;
+                height: 70%;
+            }
+
+            @media (max-width:680px) {
+                width: 30px;
+                height: 30px;
+            }
+            
         }
 
         .decreaseButton {
@@ -49,6 +97,43 @@
             border-top-right-radius: 12px;
             border-bottom-right-radius: 12px;
             cursor: pointer;
+        }
+    }
+
+    .deleteButton {
+        flex: 1;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 5px;
+        font-family: Nunito;
+        font-weight: 700;
+        font-size: 1em;
+        color: #ED2C19;
+    }
+
+    .totalPriceDiv {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .totalPrice {
+            font-weight: 700;
+            font-size: 1.25em;
+            color: #172029;
+            margin-top: 5px;
+        }
+
+        .singlePrice {
+            font-weight: 400;
+            font-size: 0.75em;
+            color: #808080;
+            margin-bottom: 0;
         }
     }
 }
