@@ -73,7 +73,6 @@ const ProductPage = () => {
           <img src={getStarImagePath(product.rating)} alt='rating' className={style.productRating} />
           <p className={style.productPrice}>{product.price}₽</p>
 
-
           {isAddToCartOpen ? (
             <button className={style.addToCartButton} onClick={()=>setIsAddToCartOpen(!isAddToCartOpen)}>
               Добавить в корзину
@@ -84,7 +83,7 @@ const ProductPage = () => {
               <span className={style.quantity}>{localQuantity}</span>
               <button className={style.increaseButton} onClick={handleIncrease}>+</button>
               <button className={style.checkoutButton} onClick={handleAddToCart}>ОФОРМИТЬ ЗАКАЗ</button>
-          </div>
+            </div>
           )}
           <div className={style.returnPolicy}>
             <img src='/img/svg/Undo.svg' alt='return icon' className={style.returnPolicyIcon} />
@@ -100,7 +99,7 @@ const ProductPage = () => {
       </div>
       <div className={style.productDescription}>
         <h2>Описание</h2>
-        <p>{convertHTMLToText(product.description)}</p>
+        <div>{convertHTMLToText(product.description)}</div>
       </div>
     </div>
   );

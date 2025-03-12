@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CartItemProps, CartState, ApiCartItem } from "../../types";
+import { CartItemProps, CartState, ApiCartItem, OrdersProps } from "../../types";
+import { v4 as uuidv4 } from "uuid";
 
 const API_BASE_URL = "https://skillfactory-task.detmir.team";
 
@@ -75,20 +76,35 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
 );
 
   
-  export const submitOrder = createAsyncThunk<CartState, void, { rejectValue: string }>(
-    "cart/submitOrder",
-    async (_, { rejectWithValue }) => {
-      try {
-        await axios.post(`${API_BASE_URL}/cart/submit`);
-        return {
-          items: [],
-          total: 0,
-          status: "succeeded",
-          error: null,
-        };
-      } catch (error) {
-        console.error("Order submission error:", error);
-        return rejectWithValue("Ошибка при оформлении заказа");
+export const submitOrder = createAsyncThunk<
+  { orderId: string; items: OrdersProps[] }, // ✅ Expected return type
+  void,
+  { rejectValue: string }
+>(
+  "cart/submitOrder",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/cart/submit`);
+
+      console.log("Server response:", response.data); 
+
+      if (!Array.isArray(response.data)) {
+        throw new Error("Сервер не вернул корректные данные заказа");
       }
+
+      const newOrderId = uuidv4();
+      const items: OrdersProps[] = response.data.map((order) => ({
+        id: order.product.id,
+        picture: order.product.picture,
+      }));
+
+      return {
+        orderId: newOrderId,
+        items,
+      };
+    } catch (error) {
+      console.error("Order submission error:", error);
+      return rejectWithValue("Ошибка при оформлении заказа");
     }
-  );
+  }
+);

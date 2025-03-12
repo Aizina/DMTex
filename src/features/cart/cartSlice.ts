@@ -1,27 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CartState } from "../../types";
+import { CartState, OrdersState, OrdersProps } from "../../types";
 import { fetchCart, submitOrder, updateCart } from "./cartAPI";
-
-const loadCartFromLocalStorage = (): CartState => {
-  try {
-    const cart = localStorage.getItem("cart");
-    return cart
-      ? JSON.parse(cart)
-      : { items: [], total: 0, status: "idle", error: null };
-  } catch (error) {
-    console.error("Error loading cart from localStorage:", error);
-    return { items: [], total: 0, status: "idle", error: null };
-  }
-};
-
-const saveCartToLocalStorage = (cart: CartState) => {
-  try {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  } catch (error) {
-    console.error("Error saving cart to localStorage:", error);
-  }
-};
-
+import { loadCartFromLocalStorage, saveCartToLocalStorage } from "../localStorage";
+import { loadOrdersFromLocalStorage, saveOrdersToLocalStorage } from "../localStorage";
 
 const initialState: CartState = loadCartFromLocalStorage();
 
@@ -46,6 +27,7 @@ const cartSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || "Ошибка";
       });
+
     builder
       .addCase(updateCart.pending, (state) => {
         state.status = "loading";
@@ -62,18 +44,37 @@ const cartSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || "Ошибка";
       });
+
     builder
       .addCase(submitOrder.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(submitOrder.fulfilled, (state, action: PayloadAction<CartState>) => {
-        state.items = action.payload.items;
-        state.total = action.payload.total;
+      .addCase(submitOrder.fulfilled, (state, action: PayloadAction<{ orderId: string; items: OrdersProps[] }>) => {
+        state.items = []; 
+        state.total = 0;
         state.status = "succeeded";
         state.error = null;
         saveCartToLocalStorage(state);
-      })
+    
+        const { orderId, items } = action.payload;
+    
+        const existingOrders: OrdersState = loadOrdersFromLocalStorage();
+    
+        const updatedOrders = {
+          ...existingOrders.items,
+          [orderId]: items, 
+        };
+    
+        const updatedOrdersState: OrdersState = {
+          items: updatedOrders,
+          currentPage: existingOrders.currentPage || 1, 
+          status: "succeeded",
+          error: null,
+        };
+    
+        saveOrdersToLocalStorage(updatedOrdersState); 
+    })
       .addCase(submitOrder.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Ошибка";

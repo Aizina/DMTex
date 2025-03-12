@@ -33,3 +33,23 @@ export interface ApiCartItem {
     };
     quantity: number;
 }
+
+export interface OrdersProps {
+    id: string;
+    picture: string;
+}
+
+export interface OrdersState {
+  items: Record<number, OrdersProps[]>; 
+  currentPage: number; 
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  forceRefresh?: boolean; 
+}
+
+export const initialState: OrdersState = {
+  items: {},
+  currentPage: 1,
+  status: 'idle',
+  error: null,
+};
