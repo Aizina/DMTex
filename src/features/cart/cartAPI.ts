@@ -1,48 +1,44 @@
-import axios from "axios";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CartItemProps, CartState, ApiCartItem, OrdersProps } from "../../types";
-import { v4 as uuidv4 } from "uuid";
-
-const API_BASE_URL = "https://skillfactory-task.detmir.team";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import apiClient from '../apiClient';
+import { CartItemProps, CartState, ApiCartItem } from '../../types';
 
 const recalcTotal = (items: CartItemProps[]): number =>
   items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
 export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string }>(
-    "cart/fetchCart",
-    async (_, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/cart`);
-        const cartItems: CartItemProps[] = response.data.map((item: ApiCartItem) => ({
-          id: item.product.id,
-          title: item.product.title,
-          picture: item.product.picture,
-          price: item.product.price,
-          quantity: item.quantity,
-        }));
-        return {
-          items: cartItems,
-          total: recalcTotal(cartItems),
-          status: "succeeded",
-          error: null,
-        };
-      } catch (error) {
-        console.error("Error fetching cart:", error);
-        return rejectWithValue("Не удалось загрузить корзину");
-      }
+  'cart/fetchCart',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get('/cart');
+      const cartItems: CartItemProps[] = response.data.map((item: ApiCartItem) => ({
+        id: item.product.id,
+        title: item.product.title,
+        picture: item.product.picture,
+        price: item.product.price,
+        quantity: item.quantity,
+      }));
+      console.log('Fetched cart items:', cartItems);
+      return {
+        items: cartItems,
+        total: recalcTotal(cartItems),
+        status: 'succeeded',
+        error: null,
+      };
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      return rejectWithValue('Не удалось загрузить корзину');
     }
-  );
-  
-  export const updateCart = createAsyncThunk<
-  CartState,
-  CartItemProps,
+  }
+);
+
+export const updateCart = createAsyncThunk<
+  CartState, CartItemProps,
   { state: { cart: CartState }; rejectValue: string }
 >(
-  "cart/updateCart",
+  'cart/updateCart',
   async (newItem, { rejectWithValue, getState }) => {
     try {
       const { items } = getState().cart;
-
       let updatedItems: CartItemProps[];
 
       if (newItem.quantity === 0) {
@@ -58,53 +54,51 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
         }
       }
 
-      await axios.post(`${API_BASE_URL}/cart/update`, {
+      await apiClient.post('/cart/update', {
         data: updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })),
       });
+
+      console.log('Updated cart items:', updatedItems);
 
       return {
         items: updatedItems,
         total: recalcTotal(updatedItems),
-        status: "succeeded",
+        status: 'succeeded',
         error: null,
       };
     } catch (error) {
-      console.error("Error updating cart:", error);
-      return rejectWithValue("Не удалось обновить корзину");
+      console.error('Error updating cart:', error);
+      return rejectWithValue('Не удалось обновить корзину');
     }
   }
 );
 
-  
 export const submitOrder = createAsyncThunk<
-  { orderId: string; items: OrdersProps[] }, // ✅ Expected return type
-  void,
-  { rejectValue: string }
+   CartState, CartItemProps ,
+   { state: { cart: CartState }; rejectValue: string }
 >(
-  "cart/submitOrder",
-  async (_, { rejectWithValue }) => {
+  'cart/submitOrder',
+  async (_, { rejectWithValue, getState }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/cart/submit`);
-
-      console.log("Server response:", response.data); 
+      const { items} = getState().cart;
+      const response = await apiClient.post('/cart/submit', {
+        data: items.map((item) => ({ id: item.id, quantity: item.quantity })),
+      });
+      console.log('Server responsewhn post:', response.data);
 
       if (!Array.isArray(response.data)) {
-        throw new Error("Сервер не вернул корректные данные заказа");
+        throw new Error('Сервер не вернул корректные данные заказа');
       }
 
-      const newOrderId = uuidv4();
-      const items: OrdersProps[] = response.data.map((order) => ({
-        id: order.product.id,
-        picture: order.product.picture,
-      }));
-
       return {
-        orderId: newOrderId,
-        items,
+        items: items,
+        total: recalcTotal(items),
+        status: 'succeeded',
+        error: null,
       };
     } catch (error) {
-      console.error("Order submission error:", error);
-      return rejectWithValue("Ошибка при оформлении заказа");
+      console.error('Order submission error:', error);
+      return rejectWithValue('Ошибка при оформлении заказа');
     }
   }
 );

@@ -1,9 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchOrders } from './ordersAPI';
-import { loadOrdersFromLocalStorage, saveOrdersToLocalStorage } from '../localStorage';
 import { OrdersState, OrdersProps } from '../../types';
 
-const initialState: OrdersState = loadOrdersFromLocalStorage();
+const initialState: OrdersState = {
+  orders: [], 
+  currentPage: 1,
+  status: 'idle',
+  error: null,
+  forceRefresh: false,
+};
 
 const ordersSlice = createSlice({
   name: 'orders',
@@ -13,15 +18,14 @@ const ordersSlice = createSlice({
       state.currentPage = action.payload;
     },
     resetOrders: (state) => {
-      state.items = {};
+      state.orders = [];
       state.currentPage = 1;
       state.status = 'idle';
       state.error = null;
       state.forceRefresh = false;
-      saveOrdersToLocalStorage(state);
     },
     refreshOrders: (state) => {
-      state.forceRefresh = true; // ✅ Fix: Allows manual refresh
+      state.forceRefresh = true;
     },
   },
   extraReducers: (builder) => {
@@ -31,9 +35,8 @@ const ordersSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action: PayloadAction<{ page: number; data: OrdersProps[] }>) => {
         state.status = 'succeeded';
-        state.items[action.payload.page] = action.payload.data;
-        state.forceRefresh = false; // ✅ Reset refresh flag
-        saveOrdersToLocalStorage(state);
+        state.orders[action.payload.page] = action.payload.data;
+        state.forceRefresh = false;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.status = 'failed';
@@ -41,7 +44,6 @@ const ordersSlice = createSlice({
       });
   },
 });
-
 
 export const { setPage, resetOrders } = ordersSlice.actions;
 export default ordersSlice.reducer;

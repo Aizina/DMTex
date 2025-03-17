@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CartState, OrdersState, OrdersProps } from "../../types";
+import { CartState } from "../../types";
 import { fetchCart, submitOrder, updateCart } from "./cartAPI";
-import { loadCartFromLocalStorage, saveCartToLocalStorage } from "../localStorage";
-import { loadOrdersFromLocalStorage, saveOrdersToLocalStorage } from "../localStorage";
 
-const initialState: CartState = loadCartFromLocalStorage();
+
+const initialState: CartState = {
+  items: [],
+  total: 0,
+  status: "idle",
+  error: null,
+};
 
 const cartSlice = createSlice({
   name: "cart",
@@ -21,7 +25,6 @@ const cartSlice = createSlice({
         state.total = action.payload.total;
         state.status = "succeeded";
         state.error = null;
-        saveCartToLocalStorage(state);
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.status = "failed";
@@ -38,7 +41,6 @@ const cartSlice = createSlice({
         state.total = action.payload.total;
         state.status = "succeeded";
         state.error = null;
-        saveCartToLocalStorage(state);
       })
       .addCase(updateCart.rejected, (state, action) => {
         state.status = "failed";
@@ -50,30 +52,11 @@ const cartSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(submitOrder.fulfilled, (state, action: PayloadAction<{ orderId: string; items: OrdersProps[] }>) => {
+      .addCase(submitOrder.fulfilled, (state) => {
         state.items = []; 
         state.total = 0;
         state.status = "succeeded";
-        state.error = null;
-        saveCartToLocalStorage(state);
-    
-        const { orderId, items } = action.payload;
-    
-        const existingOrders: OrdersState = loadOrdersFromLocalStorage();
-    
-        const updatedOrders = {
-          ...existingOrders.items,
-          [orderId]: items, 
-        };
-    
-        const updatedOrdersState: OrdersState = {
-          items: updatedOrders,
-          currentPage: existingOrders.currentPage || 1, 
-          status: "succeeded",
-          error: null,
-        };
-    
-        saveOrdersToLocalStorage(updatedOrdersState); 
+        state.error = null;                             
     })
       .addCase(submitOrder.rejected, (state, action) => {
         state.status = "failed";

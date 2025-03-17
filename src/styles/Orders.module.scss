@@ -1,0 +1,105 @@
+.ordersContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1440px;
+    font-size: 16px;
+    font-family: Nunito;
+
+    @media (max-width:708px) {
+        font-size: 12px;
+    }
+
+    @media (max-width:570px) {
+        font-size: 10px;
+    }
+
+    @media (max-width:470px) {
+        font-size: 8px;
+    }
+
+    .greyText {
+        color: #808080;
+        font-weight: 700;
+        font-size: 1em;
+    }
+
+    .ordersList {
+        .orderItem {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+
+            .orderId {
+                display: flex;
+                flex-direction: column;
+                font-weight: 700;
+
+                .orderNumber {
+                    color: #172029;
+                    font-weight: 1.25em;
+                    margin-top: 5px;
+                }
+            }
+
+            .itemsContainer {
+                display: flex;
+                flex-direction: row;
+                justify-items: flex-start;
+                align-items: center;
+                flex-wrap: wrap;
+                flex: 1;
+                padding-left: 30px;
+                gap: 10px;
+
+                .itemImage {
+                    width: 48px;
+                    height: 48px;
+
+                    @media (max-width: 884px) {
+                        width: 38px;
+                        height: 38px;              
+                    }
+
+                    @media (max-width: 620px) {
+                        width: 18px;
+                        height: 18px;              
+                    }
+                }
+            }
+
+            .orderDetails {
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+                align-items: center;
+                font-size: 1em;
+
+                .greyText {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    align-items: flex-end;
+                    font-size: 1em;
+                }
+
+                .highlightText {
+                    color: #172029;
+                    font-size: 1em;
+                    font-weight: 700;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    align-items: flex-start;
+                }
+            }
+        }
+
+    }
+}

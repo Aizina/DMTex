@@ -33,23 +33,30 @@ export interface ApiCartItem {
     };
     quantity: number;
 }
-
+export interface ItemsInOrders {
+    quantity: number;
+    createdAt: string;
+    product: ProductProps;
+}
 export interface OrdersProps {
-    id: string;
-    picture: string;
+    uniqueId?: string;
+  items: {
+    quantity: number;
+    createdAt: string;
+    product: ProductProps;
+  }[];
 }
 
 export interface OrdersState {
-  items: Record<number, OrdersProps[]>; 
+  orders: Record<number, OrdersProps[]>; 
   currentPage: number; 
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   forceRefresh?: boolean; 
 }
 
-export const initialState: OrdersState = {
-  items: {},
-  currentPage: 1,
-  status: 'idle',
-  error: null,
-};
+export interface RawOrder {
+    [key: string]: unknown; // <--- index signature so `orderObj[key]` won't complain
+    uniqueId?: string;
+  }
+  
