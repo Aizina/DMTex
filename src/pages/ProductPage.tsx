@@ -28,9 +28,11 @@ const ProductPage = () => {
     fetchProduct(id)
       .then((data) => {
         setProduct(data);
-        // If item is already in cart, use its quantity
         const cartItem = cartItems.find((item) => item.id === data.id);
-        if (cartItem) setLocalQuantity(cartItem.quantity);
+        if (cartItem) {
+          setIsAddToCartOpen(false);
+          setLocalQuantity(cartItem.quantity);
+        } 
       })
       .catch(() => setError('Product not found'));
   }, [id, cartItems]);
@@ -79,9 +81,13 @@ const ProductPage = () => {
             </button>
           ) : (
             <div className={style.cartControls}>
-              <button className={style.decreaseButton} onClick={handleDecrease}>-</button>
+              <button className={style.decreaseButton} onClick={handleDecrease}>
+                <img src="/img/Minus.png" alt="Уменьшить" /> 
+              </button>
               <span className={style.quantity}>{localQuantity}</span>
-              <button className={style.increaseButton} onClick={handleIncrease}>+</button>
+              <button className={style.increaseButton} onClick={handleIncrease}>
+                <img src="/img/Plus.png" alt="Увеличить" /> 
+              </button>
               <button className={style.checkoutButton} onClick={handleAddToCart}>ОФОРМИТЬ ЗАКАЗ</button>
             </div>
           )}

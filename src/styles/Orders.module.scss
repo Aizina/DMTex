@@ -26,6 +26,8 @@
     }
 
     .ordersList {
+        margin: 0;
+        padding: 0;
         .orderItem {
             background-color: #FFFFFF;
             border-radius: 16px;
@@ -102,4 +104,5 @@
         }
 
     }
+
 }

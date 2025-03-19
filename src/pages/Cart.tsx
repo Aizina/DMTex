@@ -20,7 +20,7 @@ const Cart = () => {
       return;
     }
 
-    dispatch(submitOrder());
+    dispatch(submitOrder(items));
     alert('Заказ успешно оформлен!');
   };
 

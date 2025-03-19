@@ -5,6 +5,10 @@ import { setPage } from "../features/orders/orderSlice";
 import { RootState, AppDispatch } from "../app/store";
 import { OrdersProps } from "../types";
 import style from '../styles/Orders.module.scss';
+import Pagination from "../components/Pagination";
+import { formatDate } from "../utils/FormatDate";
+import { Link } from "react-router-dom";
+import { updateCart } from "../features/cart/cartAPI";
 
 const Orders: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,36 +20,39 @@ const Orders: React.FC = () => {
     dispatch(fetchOrders({ page: currentPage, limit: 5 }));
   }, [dispatch, currentPage]);
 
-  const handleNextPage = () => dispatch(setPage(currentPage + 1));
-  const handlePrevPage = () => dispatch(setPage(Math.max(1, currentPage - 1)));
+
+  const handlePageChange = (page: number) => dispatch(setPage(page));
+  const totalPages = 10;
 
   const currentPageOrders = orders[currentPage] || [];
 
   const calculateOrderTotal = (order: OrdersProps) =>
     order.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  // Helper function to format date
-const formatDate = (isoDate: string) => {
-  return new Intl.DateTimeFormat('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(isoDate));
-};
-
+  const handleOrderClick = (order: OrdersProps) => {
+    console.log(order); // Log the order structure
+    order.items.forEach(item => 
+      dispatch(updateCart({
+        id: item.product.id,
+        title: item.product.title,
+        picture: item.product.picture,
+        price: item.product.price,
+        quantity: item.quantity
+      }))
+    );
+  };
 
 
   return (
     <div className={style.ordersContainer}>
-
       {status === "loading" && <p>Loading orders...</p>}
       {status === "failed" && <p>{error}</p>}
 
       {currentPageOrders.length > 0 ? (
         <ul className={style.ordersList}>
           {currentPageOrders.map((order) => (
-            <li key={order.uniqueId} className={style.orderItem}>
-              <div className={style.orderId}>
+            <li key={order.uniqueId} className={style.orderItem} >
+              <div className={style.orderId} onClick={() =>handleOrderClick(order)}>
                 <span className={style.greyText}>Заказ</span>
                 <span className={style.orderNumber}>№{order.uniqueId?.slice(0, 6)}</span>
               </div>
@@ -53,18 +60,20 @@ const formatDate = (isoDate: string) => {
               <div className={style.itemsContainer}>
                 {order.items.map((item, idx) => (
                   <div key={idx} className={style.item}>
-                    <img
-                      src={item.product.picture}
-                      alt={item.product.title}
-                      className={style.itemImage}
-                    />
+                    <Link to = {`/${item.product.id}`} >
+                      <img
+                        src={item.product.picture}
+                        alt={item.product.title}
+                        className={style.itemImage}
+                      />
+                    </Link>
                   </div>
                 ))}
               </div>
 
               <div className={style.orderDetails}>
                 <div className={style.greyText}>
-                  <span >Оформлено </span>
+                  <span>Оформлено </span>
                   <span>На сумму </span>
                 </div>
 
@@ -80,15 +89,11 @@ const formatDate = (isoDate: string) => {
         status === "succeeded" && <p className={style.noOrders}>No orders found.</p>
       )}
 
-      <div className={style.pagination}>
-        <button onClick={handlePrevPage} disabled={currentPage === 1} className={style.pageButton}>
-          Previous
-        </button>
-        <span className={style.currentPage}>Page {currentPage}</span>
-        <button onClick={handleNextPage} className={style.pageButton}>
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

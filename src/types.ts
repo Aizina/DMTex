@@ -36,14 +36,14 @@ export interface ApiCartItem {
 export interface ItemsInOrders {
     quantity: number;
     createdAt: string;
-    product: ProductProps;
+    product: CartItemProps;
 }
 export interface OrdersProps {
     uniqueId?: string;
   items: {
     quantity: number;
     createdAt: string;
-    product: ProductProps;
+    product: CartItemProps;
   }[];
 }
 

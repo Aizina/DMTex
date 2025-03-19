@@ -53,12 +53,10 @@ export const updateCart = createAsyncThunk<
           updatedItems = [...items, newItem];
         }
       }
-
+      console.log('Sending to updateCart:', updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })));
       await apiClient.post('/cart/update', {
         data: updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })),
       });
-
-      console.log('Updated cart items:', updatedItems);
 
       return {
         items: updatedItems,
@@ -74,25 +72,26 @@ export const updateCart = createAsyncThunk<
 );
 
 export const submitOrder = createAsyncThunk<
-   CartState, CartItemProps ,
-   { state: { cart: CartState }; rejectValue: string }
+  CartState,
+  CartItemProps[], 
+  { rejectValue: string }
 >(
   'cart/submitOrder',
-  async (_, { rejectWithValue, getState }) => {
+  async (items, { rejectWithValue }) => {
     try {
-      const { items} = getState().cart;
       const response = await apiClient.post('/cart/submit', {
         data: items.map((item) => ({ id: item.id, quantity: item.quantity })),
       });
-      console.log('Server responsewhn post:', response.data);
+
+      console.log('Server response when post:', response.data);
 
       if (!Array.isArray(response.data)) {
         throw new Error('Сервер не вернул корректные данные заказа');
       }
 
       return {
-        items: items,
-        total: recalcTotal(items),
+        items: [],
+        total: 0,
         status: 'succeeded',
         error: null,
       };

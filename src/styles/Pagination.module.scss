@@ -1,0 +1,45 @@
+.pagination {
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+    margin: auto;
+    align-items: center;
+
+    .pageButton {
+        width: 50px;
+        height: 50px;
+        background-color: #E6F1FC;
+        border-radius: 12px;
+        border: none;
+        color: #0073E6;
+        font-family: Nunito;
+        font-size: 1em;
+        font-weight: 700;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.activePage {
+            background-color: #0073E6;
+            color: #FFFFFF;
+        }
+
+        img{
+            width: 80%;
+            height: 80%;
+        }
+        @media (max-width: 540px) {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8em;
+        }
+    }
+
+    .dots {
+        align-self: center;
+        color: #0073E6;
+        line-height: 1.25em;
+    }
+
+}
