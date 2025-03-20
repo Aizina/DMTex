@@ -10,6 +10,7 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiClient.get('/cart');
+      console.log('fetchCart response', response)
       const cartItems: CartItemProps[] = response.data.map((item: ApiCartItem) => ({
         id: item.product.id,
         title: item.product.title,
@@ -31,28 +32,29 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
   }
 );
 
+
 export const updateCart = createAsyncThunk<
-  CartState, CartItemProps,
+  CartState, CartItemProps | CartItemProps[],
   { state: { cart: CartState }; rejectValue: string }
 >(
   'cart/updateCart',
-  async (newItem, { rejectWithValue, getState }) => {
+  async (newItemOrItems, { rejectWithValue, getState }) => {
     try {
       const { items } = getState().cart;
-      let updatedItems: CartItemProps[];
+      const newItems = Array.isArray(newItemOrItems) ? newItemOrItems : [newItemOrItems];
+      let updatedItems = [...items];
 
-      if (newItem.quantity === 0) {
-        updatedItems = items.filter((item) => item.id !== newItem.id);
-      } else {
-        const existingItem = items.find((item) => item.id === newItem.id);
+      newItems.forEach((newItem) => {
+        const existingItem = updatedItems.find((item) => item.id === newItem.id);
         if (existingItem) {
-          updatedItems = items.map((item) =>
+          updatedItems = updatedItems.map((item) =>
             item.id === newItem.id ? { ...item, quantity: newItem.quantity } : item
-          );
-        } else {
-          updatedItems = [...items, newItem];
+          ).filter((item) => item.quantity > 0);
+        } else if (newItem.quantity > 0) {
+          updatedItems.push(newItem);
         }
-      }
+      });
+
       console.log('Sending to updateCart:', updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })));
       await apiClient.post('/cart/update', {
         data: updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })),
@@ -70,6 +72,7 @@ export const updateCart = createAsyncThunk<
     }
   }
 );
+
 
 export const submitOrder = createAsyncThunk<
   CartState,

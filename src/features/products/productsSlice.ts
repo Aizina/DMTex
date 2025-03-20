@@ -32,7 +32,7 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const { page, data } = action.payload;
-        state.items[page] = data; // Храним данные по страницам
+        state.items[page] = data;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';

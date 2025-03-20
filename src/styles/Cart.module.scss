@@ -52,6 +52,26 @@
             cursor: pointer;
             font-size: 1em;
             font-weight: 700;
+
+            &:hover {
+                background: #0073E6;
+                background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), #0073E6;
+              }
+              
+              
+            &:active {
+                background: linear-gradient(0deg, #0073E6, #0073E6),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+            }
+        
+            &:disabled {
+                opacity: 0.4;
+            }
+
         }
+    }
+
+    .errorMessage {
+        color: red;
     }
 }

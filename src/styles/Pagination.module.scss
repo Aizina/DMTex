@@ -20,15 +20,24 @@
         align-items: center;
         justify-content: center;
 
+        img{
+            width: 80%;
+            height: 80%;
+        }
+
         &.activePage {
             background-color: #0073E6;
             color: #FFFFFF;
         }
 
-        img{
-            width: 80%;
-            height: 80%;
+        &:hover {
+           background: linear-gradient(0deg, rgba(0, 115, 230, 0.1), rgba(0, 115, 230, 0.1)), #E6F1FC;
         }
+
+        &:disabled {
+            opacity: 0.4;
+        }
+        
         @media (max-width: 540px) {
             width: 30px;
             height: 30px;

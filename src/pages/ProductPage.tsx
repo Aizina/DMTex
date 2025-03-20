@@ -21,7 +21,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     if (!id) {
-      setError('Product ID is missing');
+      setError('Нет айди продукта');
       return;
     }
 
@@ -34,14 +34,14 @@ const ProductPage = () => {
           setLocalQuantity(cartItem.quantity);
         } 
       })
-      .catch(() => setError('Product not found'));
+      .catch((error) => setError(error.message));
   }, [id, cartItems]);
 
   if (error) {
     return (
       <div className={style.errorPage}>
         <h1>{error}</h1>
-        <button onClick={() => navigate('/')}>Go to Product List</button>
+        <button onClick={() => navigate('/')}>Вернуться на главную страницу</button>
       </div>
     );
   }

@@ -8,7 +8,7 @@ import style from '../styles/Orders.module.scss';
 import Pagination from "../components/Pagination";
 import { formatDate } from "../utils/FormatDate";
 import { Link } from "react-router-dom";
-import { updateCart } from "../features/cart/cartAPI";
+import { updateCart, fetchCart } from "../features/cart/cartAPI";
 
 const Orders: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,17 +29,26 @@ const Orders: React.FC = () => {
   const calculateOrderTotal = (order: OrdersProps) =>
     order.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
+
+
   const handleOrderClick = (order: OrdersProps) => {
-    console.log(order); // Log the order structure
-    order.items.forEach(item => 
-      dispatch(updateCart({
-        id: item.product.id,
-        title: item.product.title,
-        picture: item.product.picture,
-        price: item.product.price,
-        quantity: item.quantity
-      }))
-    );
+
+    if (window.confirm("Вы хотите повторить заказ?")) { 
+  
+    const updatedItems = order.items.map(item => ({
+      id: item.product.id,
+      title: item.product.title,
+      picture: item.product.picture,
+      price: item.product.price,
+      quantity: item.quantity
+    }));
+  
+    dispatch(updateCart(updatedItems));
+    dispatch(fetchCart()); 
+  }
+  else {
+    console.log("Cart update cancelled.");
+  }
   };
 
 
@@ -52,7 +61,7 @@ const Orders: React.FC = () => {
         <ul className={style.ordersList}>
           {currentPageOrders.map((order) => (
             <li key={order.uniqueId} className={style.orderItem} >
-              <div className={style.orderId} onClick={() =>handleOrderClick(order)}>
+              <div className={style.orderId}>
                 <span className={style.greyText}>Заказ</span>
                 <span className={style.orderNumber}>№{order.uniqueId?.slice(0, 6)}</span>
               </div>
@@ -82,6 +91,8 @@ const Orders: React.FC = () => {
                   <span>{calculateOrderTotal(order).toFixed(0)} ₽</span>
                 </div>
               </div>
+
+              <img src="/img/Cart.png" alt='Cart' onClick={() =>handleOrderClick(order)} className={style.repeatOrder} />
             </li>
           ))}
         </ul>

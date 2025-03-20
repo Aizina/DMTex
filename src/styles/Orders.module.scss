@@ -1,3 +1,4 @@
+
 .ordersContainer {
     display: flex;
     flex-direction: column;
@@ -36,6 +37,7 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
+            gap: 15px;
             margin-bottom: 30px;
 
             .orderId {
@@ -101,6 +103,18 @@
                     align-items: flex-start;
                 }
             }
+
+            .repeatOrder {
+               width: 20px;
+               height: 20px;
+               cursor: pointer;
+
+               @media (max-width: 540px) {
+                width: 10px;
+                height: 10px;
+               }
+            }
+
         }
 
     }

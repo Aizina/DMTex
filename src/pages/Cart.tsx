@@ -1,26 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../app/store';
 import { fetchCart, submitOrder } from '../features/cart/cartAPI';
 import style from '../styles/Cart.module.scss';
 import CartItem from '../components/cartItem'
+import { fetchOrders } from '../features/orders/ordersAPI';
 
 const Cart = () => {
   const dispatch = useAppDispatch();
   const { items, total } = useSelector((state: RootState) => state.cart);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(fetchCart());
   }, [dispatch]);
 
   const handleSubmitOrder = () => {
-    if (total > 10_000) {
-      setError('Общая сумма заказа не может превышать 10 000 руб.');
-      return;
-    }
-
     dispatch(submitOrder(items));
+    dispatch(fetchOrders({ page: 1, limit: 5 }));
     alert('Заказ успешно оформлен!');
   };
 
@@ -40,8 +36,14 @@ const Cart = () => {
           <span className={style.totalAmount}>{total}₽</span>
         </div>
         
-        {error && <p className={style.error}>{error}</p>}
-        <button onClick={handleSubmitOrder} className={style.checkoutButton}>ОФОРМИТЬ ЗАКАЗ</button>
+        {total > 10000 && 
+        <p className={style.errorMessage}>Общая сумма заказа не может превышать 10 000 руб.</p>}
+
+        <button onClick={handleSubmitOrder} 
+                className={style.checkoutButton}
+                disabled={total > 10_000}>
+                  ОФОРМИТЬ ЗАКАЗ
+        </button>
       </div>
     </div>
   );
