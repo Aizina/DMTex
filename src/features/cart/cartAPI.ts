@@ -18,7 +18,6 @@ export const fetchCart = createAsyncThunk<CartState, void, { rejectValue: string
         price: item.product.price,
         quantity: item.quantity,
       }));
-      console.log('Fetched cart items:', cartItems);
       return {
         items: cartItems,
         total: recalcTotal(cartItems),
@@ -55,7 +54,6 @@ export const updateCart = createAsyncThunk<
         }
       });
 
-      console.log('Sending to updateCart:', updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })));
       await apiClient.post('/cart/update', {
         data: updatedItems.map((item) => ({ id: item.id, quantity: item.quantity })),
       });

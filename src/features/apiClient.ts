@@ -6,8 +6,6 @@ if (!API_BASE_URL) {
   throw new Error("API_BASE_URL is not defined in the environment variables.");
 }
 
-console.log("API_BASE_URL:", API_BASE_URL);
-
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true, 

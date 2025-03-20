@@ -22,7 +22,10 @@ export const fetchOrders = createAsyncThunk<
         params: { page, limit, sort: "title:asc" },
       });
 
+      console.log(apiClient)
+
       const rawOrders = response.data.data as RawOrder[];
+      console.log('response orders', response)
 
       const ordersTransformed: OrdersProps[] = rawOrders.map((orderObj) => {
         const { uniqueId } = orderObj;
@@ -37,7 +40,7 @@ export const fetchOrders = createAsyncThunk<
           items: items as [], 
         };
       });
-      console.log(ordersTransformed)
+      console.log('response orders transformed',ordersTransformed)
       return { page, data: ordersTransformed };
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
