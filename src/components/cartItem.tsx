@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 const CartItem = (item: CartItemProps) => {
   const dispatch = useAppDispatch();
   const [quantityInto, setQuantityInfo] = useState(item.quantity);
-  const [showOneItemPrice, setShowOneItemPrice] = useState(true);
+  const [showOneItemPrice, setShowOneItemPrice] = useState(item.quantity === 1);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
 
   const handleIncrease = () => {
@@ -26,7 +26,7 @@ const CartItem = (item: CartItemProps) => {
   };
 
   const handleDecrease = () => {
-    if (item && item.quantity > 0) {
+    if (item && item.quantity > 1) {
       dispatch(updateCart({ ...item, quantity: item.quantity - 1 }));
       if(quantityInto === 2){
         setShowOneItemPrice(true);

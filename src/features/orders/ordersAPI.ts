@@ -16,14 +16,8 @@ export const fetchOrders = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >(
   "orders/fetchOrders",
-  async ({ page, limit }, { rejectWithValue, getState }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
-      const state = getState().orders;
-
-      if (state.orders[page] && !state.forceRefresh) {
-        return { page, data: state.orders[page] };
-      }
-
       const response = await apiClient.get("/orders", {
         params: { page, limit, sort: "title:asc" },
       });
@@ -43,7 +37,7 @@ export const fetchOrders = createAsyncThunk<
           items: items as [], 
         };
       });
-console.log(ordersTransformed)
+      console.log(ordersTransformed)
       return { page, data: ordersTransformed };
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
